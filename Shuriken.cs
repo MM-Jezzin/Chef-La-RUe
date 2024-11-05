@@ -17,15 +17,15 @@ public class Shuriken : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (this.gameObject != null)
+        if (this.gameObject != null) // It will destroy the shuriken 1 second after it is thrown.
         {
             Destroy(gameObject, 1f);
            
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision) // When the shuriken collides with enemy "collision"
     {
-        if (collision.gameObject.tag == "Enemies")
+        if (collision.gameObject.tag == "Enemies")// Will destory the shuriken and the enemies.
         {
             Destroy(collision.gameObject);
             Destroy(gameObject);
@@ -34,5 +34,3 @@ public class Shuriken : MonoBehaviour
         }
         Debug.Log("Collided");
     }
-
-}
