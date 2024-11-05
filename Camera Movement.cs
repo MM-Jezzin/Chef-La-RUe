@@ -22,8 +22,8 @@ public class CameraMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        Vector3 v3_targetPos = player.position + v3_offsetDistance;
-        Vector3 v3_smoothPos = Vector3.Slerp(transform.position, v3_targetPos, f_smoothFactor * Time.deltaTime);
-        transform.position = v3_targetPos;
+        Vector3 v3_targetPos = player.position + v3_offsetDistance; // Calculates target position - player position + offset
+        Vector3 v3_smoothPos = Vector3.Slerp(transform.position, v3_targetPos, f_smoothFactor * Time.deltaTime); // Moves smoothly cameras current position to the target position (player + offset), based on the smooth factor.
+        transform.position = v3_targetPos; // sets cameras position to the target position
     }
 }
