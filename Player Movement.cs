@@ -31,9 +31,9 @@ public class PlayerMovement : MonoBehaviour
 
         //Flip player when moving left-right
         if (horizontalInput > 0.01f)
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
         else if (horizontalInput < -0.01f)
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-0.4f, 0.4f, 0.4f);
 
 
 
@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
             if (horizontalInput == 0)
             {
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 5, 0);
-                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x) / 10 * 4, transform.localScale.y, transform.localScale.z);
             }
             else
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
@@ -140,3 +140,4 @@ public class PlayerMovement : MonoBehaviour
 
     
 }
+
