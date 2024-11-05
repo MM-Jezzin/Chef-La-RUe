@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
@@ -6,6 +6,8 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private float rangeattackCooldown;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private GameObject[] ChocolateStars;
     private Animator anim;
     private PlayerMovement playerMovement;
     private float rangecooldownTimer = Mathf.Infinity;
@@ -24,9 +26,23 @@ public class PlayerAttack : MonoBehaviour
             rangecooldownTimer += Time.deltaTime;
         }    
     }
+   
     private void Attack()
     {
         anim.SetTrigger("rangeAttack");
         rangecooldownTimer = 0;
+
+        ChocolateStars[FindChocolateStar()].transform.position = firePoint.position;
+        ChocolateStars[FindChocolateStar()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
+
+    }
+    private int FindChocolateStar()
+    {
+        for (int i = 0; i < ChocolateStars.Length; i++)
+        {
+            if (ChocolateStars[i].activeInHierarchy)
+                return i;
+        }
+        return 0;
     }
 }
