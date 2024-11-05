@@ -83,24 +83,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        if (isGrounded())
+        if (isGrounded())// If player is grounded
         {
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
-            anim.SetTrigger("jump");
+            body.velocity = new Vector2(body.velocity.x, jumpPower); // Makes the player jump by changing y velocity by jump power, which we can change.
+            anim.SetTrigger("jump"); // Starts jumping animation
 
             
         }
-        else if (onWall() && !isGrounded())
+        else if (onWall() && !isGrounded()) // if player is on wall and is not grounded
         {
-            if (horizontalInput == 0)
+            if (horizontalInput == 0) // If player has no horizontal input (left or right)
             {
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 5, 0);
-                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x) / 10 * 4, transform.localScale.y, transform.localScale.z);
+                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 5, 0); // Adds a force to push away from the wall horizontally
+                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x) / 10 * 4, transform.localScale.y, transform.localScale.z); // Changes scale to flip the character
             }
             else
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6); // Applies a force to push away from wall and go upward
 
-            wallJumpCooldown = 0;
+            wallJumpCooldown = 0; // Resets wall jump cooldown.
         }
     }
 
@@ -108,12 +108,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void superJump()
     {
-        if (isGrounded())
+        if (isGrounded()) // if the player is grounded
         {
-            body.velocity = new Vector2(body.velocity.x, superJumpPower);
-            anim.SetTrigger("jump");
+            body.velocity = new Vector2(body.velocity.x, superJumpPower); // Makes the player jump by changing y velocity. Keeps x velocity the same.
+            anim.SetTrigger("jump"); // Starts jump animation. (Needs Fixing)
 
-            superJumpCooldown = 0;
+            superJumpCooldown = 0; // Resets jump cooldown
         }
     }
 
