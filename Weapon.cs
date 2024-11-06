@@ -22,8 +22,8 @@ public class Weapon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         { 
-            go_shot = (GameObject)Instantiate(go_projectile);
-            rb_shot = go_shot.GetComponent<Rigidbody2D>();
+            go_shot = (GameObject)Instantiate(go_projectile); // Instantiate is used to spawn in the chocolate shuriken prefab.
+            rb_shot = go_shot.GetComponent<Rigidbody2D>(); // Gets the rigidbody from go_shot and calles it rb_shot
             Vector3 v3_spawnPosition = go_player.transform.position + v3_offsetRight;
 
             if (go_player.transform.localScale.x < 0) // If player is facing left
