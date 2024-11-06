@@ -24,18 +24,18 @@ public class Weapon : MonoBehaviour
         { 
             go_shot = (GameObject)Instantiate(go_projectile); // Instantiate is used to spawn in the chocolate shuriken prefab.
             rb_shot = go_shot.GetComponent<Rigidbody2D>(); // Gets the rigidbody from go_shot and calles it rb_shot
-            Vector3 v3_spawnPosition = go_player.transform.position + v3_offsetRight;
+            Vector3 v3_spawnPosition = go_player.transform.position + v3_offsetRight; // 
 
             if (go_player.transform.localScale.x < 0) // If player is facing left
             {
                 v3_spawnPosition = go_player.transform.position + new Vector3(v3_offsetLeft.x, v3_offsetLeft.y, v3_offsetLeft.z); // Making spawn position of projectile the offset for when player is looking left
-                rb_shot.velocity = Vector3.right * -10;
-                Debug.Log("Firing projectile left");
+                rb_shot.velocity = Vector3.right * -10; // Moving shuriken to the left
+                Debug.Log("Firing projectile left"); // Just a debug to check to see if things work//
             }
             else if (go_player.transform.localScale.x > 0)
             {
                 v3_spawnPosition = go_player.transform.position + new Vector3(v3_offsetRight.x, v3_offsetRight.y, v3_offsetRight.z); // Making spawn position of projectile the offset for when player is looking right
-                rb_shot.velocity = Vector3.right * 10;
+                rb_shot.velocity = Vector3.right * 10; // Moving shuriken to the right
                 Debug.Log("Firing projectile right");
             }
             go_shot.transform.position = v3_spawnPosition;
