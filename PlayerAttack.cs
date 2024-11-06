@@ -1,4 +1,21 @@
- using System.Collections;
+
+// IGLORE THIS THIS AN OLD ONE Weapon.cs is the new one
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
