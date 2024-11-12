@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour 
@@ -13,7 +14,10 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpCooldown;
     private float horizontalInput;
     private float superJumpCooldown;
-
+    private AudioSource sd_audioSource;
+    public AudioClip sd_jumpClip;
+    public AudioClip sd_wallAttachClip;
+    private bool hasWallAttached = false;
 
     private void Awake()
     {
@@ -22,11 +26,56 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>(); 
 
+        // Gets the audio scource references so it can play audio.
+        sd_audioSource = this.GetComponent<AudioSource>();
     }
     private void Update()
     {
         //Lets the player move left-right
-        horizontalInput = Input.GetAxis("Horizontal");
+       
+        float horizontalInput = Input.GetAxis("Horizontal");
+
+        
+        if (isGrounded()) // if player is grounded
+        {
+            if (horizontalInput != 0) // If player is not idle
+            {
+                if (!sd_audioSource.isPlaying)
+                {
+                    sd_audioSource.Play(); // Play walking sound
+                }
+            }
+            else
+            {
+                
+                if (sd_audioSource.isPlaying)
+                {
+                    sd_audioSource.Stop(); // Stop walking sound if player not moving
+                }
+            }
+            if (Input.GetButtonDown("Jump") && isGrounded()) // If player is pressing jump as is on ground
+            {
+                sd_audioSource.PlayOneShot(sd_jumpClip); // Play jump sound
+            }
+          
+        }
+        if (onWall() && !isGrounded()) // If the player is on the wall and not grounded
+        {
+            if (!hasWallAttached) // Check if player hasn't already attached to the wall
+            {
+                sd_audioSource.PlayOneShot(sd_wallAttachClip); // Play wall attach sound
+                hasWallAttached = true; // Set the flag to true to not repeat
+            }
+            if (Input.GetButtonDown("Jump")) // If player is pressing jump
+            {
+                sd_audioSource.PlayOneShot(sd_jumpClip); // Play jump sound
+            }
+        }
+        else
+        {
+            hasWallAttached = false; // Reset when not on the wall
+        }
+
 
 
         //Flip player when moving left-right
@@ -41,7 +90,6 @@ public class PlayerMovement : MonoBehaviour
         //sets animation parameters
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
-
         //Wall Jump Logic
         if (wallJumpCooldown > 0.2f)
         {
@@ -49,16 +97,22 @@ public class PlayerMovement : MonoBehaviour
 
             if (onWall() && !isGrounded())
             {
-                body.gravityScale = 0;
-                body.velocity = Vector2.zero;
+                body.gravityScale = 0;  
+                body.velocity = Vector2.zero;  
+                                               
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    Jump();  
+                    wallJumpCooldown = 0f; 
+                }
             }
             else
                 body.gravityScale = 2.5f;
+            
 
             if (Input.GetKey(KeyCode.Space))
-                Jump();
-
-
+                Jump(); // Normal Jump when grounded
+         
         }
         else
             wallJumpCooldown += Time.deltaTime;
@@ -71,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.W))
                     superJump();
+    
             }
 
         }
@@ -92,15 +147,22 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (onWall() && !isGrounded()) // if player is on wall and is not grounded
         {
-            if (horizontalInput == 0) // If player has no horizontal input (left or right)
+            if (horizontalInput == 0) // No horizontal input
             {
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 5, 0); // Adds a force to push away from the wall horizontally
-                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x) / 10 * 4, transform.localScale.y, transform.localScale.z); // Changes scale to flip the character
+                // Push away from the wall horizontally
+                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 5, body.velocity.y); // Only change the x velocity
+
+                // Flip the character
+                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x) / 10 * 4, transform.localScale.y, transform.localScale.z);
+
+                // Apply vertical velocity for the wall jump
+                body.velocity = new Vector2(body.velocity.x, 6); // Set the y velocity for the jump
             }
             else
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6); // Applies a force to push away from wall and go upward
-
-            wallJumpCooldown = 0; // Resets wall jump cooldown.
+            {
+                // No specific action on horizontal input, just set a cooldown or reset mechanics
+                wallJumpCooldown = 0;
+            }
         }
     }
 
@@ -111,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded()) // if the player is grounded
         {
             body.velocity = new Vector2(body.velocity.x, superJumpPower); // Makes the player jump by changing y velocity. Keeps x velocity the same.
-            anim.SetTrigger("jump"); // Starts jump animation. (Needs Fixing)
+            anim.SetTrigger("SuperJump"); // Starts superjump animation. (Needs Fixing)
 
             superJumpCooldown = 0; // Resets jump cooldown
         }
@@ -140,4 +202,3 @@ public class PlayerMovement : MonoBehaviour
 
     
 }
-
