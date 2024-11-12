@@ -10,35 +10,54 @@ public class Weapon : MonoBehaviour
     [SerializeField] private Vector3 v3_offsetRight; // Offset when player is looking Right
     [SerializeField] private Vector3 v3_offsetLeft;  // Offset when player is looking Left
     private Rigidbody2D rb_shot;
+    private Animator anim;
+    private AudioSource walkingAudioSource;
+    private AudioSource throwingAudioSource;
+    [SerializeField] private AudioClip sd_throwingSound;
 
-    // Start is called before the first frame update
+   
     void Start()
     {
-       
-    }
+        walkingAudioSource = GetComponents<AudioSource>()[0];
+        throwingAudioSource = GetComponents<AudioSource>()[1];
 
-    // Update is called once per frame
+        if (walkingAudioSource == null || throwingAudioSource == null)
+        {
+            Debug.LogError("One or both AudioSource components are missing on the GameObject.");
+        }
+    }
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
+    
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // When left mouse is pressed
         { 
-            go_shot = (GameObject)Instantiate(go_projectile); // Instantiate is used to spawn in the chocolate shuriken prefab.
-            rb_shot = go_shot.GetComponent<Rigidbody2D>(); // Gets the rigidbody from go_shot and calles it rb_shot
-            Vector3 v3_spawnPosition = go_player.transform.position + v3_offsetRight; // 
+            go_shot = (GameObject)Instantiate(go_projectile);
+            rb_shot = go_shot.GetComponent<Rigidbody2D>();
+            Vector3 v3_spawnPosition = go_player.transform.position + v3_offsetRight;
+            anim.SetTrigger("rangeAttack"); // starts animation
+            if (sd_throwingSound != null && throwingAudioSource != null)
+            {
+                throwingAudioSource.PlayOneShot(sd_throwingSound);
 
+            }
             if (go_player.transform.localScale.x < 0) // If player is facing left
             {
                 v3_spawnPosition = go_player.transform.position + new Vector3(v3_offsetLeft.x, v3_offsetLeft.y, v3_offsetLeft.z); // Making spawn position of projectile the offset for when player is looking left
-                rb_shot.velocity = Vector3.right * -10; // Moving shuriken to the left
-                Debug.Log("Firing projectile left"); // Just a debug to check to see if things work//
+                rb_shot.velocity = Vector3.right * -20;
+                Debug.Log("Firing projectile left");
             }
             else if (go_player.transform.localScale.x > 0)
             {
                 v3_spawnPosition = go_player.transform.position + new Vector3(v3_offsetRight.x, v3_offsetRight.y, v3_offsetRight.z); // Making spawn position of projectile the offset for when player is looking right
-                rb_shot.velocity = Vector3.right * 10; // Moving shuriken to the right
+                rb_shot.velocity = Vector3.right * 20;
                 Debug.Log("Firing projectile right");
             }
             go_shot.transform.position = v3_spawnPosition;
         }
     }
 }
+
